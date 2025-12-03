@@ -185,7 +185,8 @@
 
         @media (max-width: 1200px) {
             .charts-section {
-                grid-template-columns: 1fr;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
             }
         }
 
@@ -215,7 +216,7 @@
             }
 
             .metrics-grid {
-                grid-template-columns: 1fr;
+                grid-template-columns: repeat(2, 1fr);
                 gap: 15px;
             }
 
@@ -277,6 +278,10 @@
                 max-width: 120px;
             }
 
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+
             .metric-card {
                 padding: 15px;
             }
@@ -320,25 +325,25 @@
             <div class="metrics-grid">
                 <div class="metric-card">
                     <div class="metric-label">Total de Atendimentos</div>
-                    <div class="metric-value">175</div>
+                    <div class="metric-value">193</div>
                     <div class="metric-sublabel">Solicitações registradas</div>
                 </div>
 
                 <div class="metric-card">
                     <div class="metric-label">Taxa de Resolução</div>
-                    <div class="metric-value">100%</div>
-                    <div class="metric-sublabel">Todos os chamados resolvidos</div>
+                    <div class="metric-value">90.7%</div>
+                    <div class="metric-sublabel">175 chamados resolvidos</div>
                 </div>
 
                 <div class="metric-card">
                     <div class="metric-label">Sistemas Atendidos</div>
-                    <div class="metric-value">15</div>
+                    <div class="metric-value">14</div>
                     <div class="metric-sublabel">Diferentes sistemas/equipamentos</div>
                 </div>
 
                 <div class="metric-card">
                     <div class="metric-label">Setores Atendidos</div>
-                    <div class="metric-value">12</div>
+                    <div class="metric-value">9</div>
                     <div class="metric-sublabel">Áreas solicitantes</div>
                 </div>
             </div>
@@ -394,26 +399,26 @@
                             <td><span class="status-badge status-resolved">Resolvido</span></td>
                         </tr>
                         <tr>
+                            <td>Problema Camera</td>
+                            <td>CFTV</td>
+                            <td>18</td>
+                            <td><span class="status-badge status-resolved">Resolvido</span></td>
+                        </tr>
+                        <tr>
                             <td>Fonte Eletroímã Queimada</td>
                             <td>Controle de Acesso</td>
                             <td>13</td>
                             <td><span class="status-badge status-resolved">Resolvido</span></td>
                         </tr>
                         <tr>
-                            <td>Instabilidade conexão</td>
-                            <td>Rede WIFI</td>
-                            <td>9</td>
-                            <td><span class="status-badge status-resolved">Resolvido</span></td>
-                        </tr>
-                        <tr>
                             <td>Suporte Oracle Netsuite</td>
                             <td>Oracle Netsuite</td>
-                            <td>9</td>
+                            <td>12</td>
                             <td><span class="status-badge status-resolved">Resolvido</span></td>
                         </tr>
                         <tr>
-                            <td>Problema Camera</td>
-                            <td>CFTV</td>
+                            <td>Instabilidade conexão</td>
+                            <td>Rede WIFI</td>
                             <td>9</td>
                             <td><span class="status-badge status-resolved">Resolvido</span></td>
                         </tr>
@@ -426,18 +431,18 @@
                         <tr>
                             <td>Fonte Switch queimado</td>
                             <td>Automações</td>
-                            <td>6</td>
-                            <td><span class="status-badge status-resolved">Resolvido</span></td>
-                        </tr>
-                        <tr>
-                            <td>Suporte sistema de acesso</td>
-                            <td>Controle de Acesso</td>
-                            <td>6</td>
+                            <td>7</td>
                             <td><span class="status-badge status-resolved">Resolvido</span></td>
                         </tr>
                         <tr>
                             <td>Instalação Impressora</td>
                             <td>Impressora</td>
+                            <td>7</td>
+                            <td><span class="status-badge status-resolved">Resolvido</span></td>
+                        </tr>
+                        <tr>
+                            <td>Suporte sistema de acesso</td>
+                            <td>Controle de Acesso</td>
                             <td>6</td>
                             <td><span class="status-badge status-resolved">Resolvido</span></td>
                         </tr>
@@ -478,11 +483,11 @@
         new Chart(systemCtx, {
             type: 'bar',
             data: {
-                labels: ['CFTV', 'Controle Acesso', 'Oracle Netsuite', 'Automações', 'Rede WIFI', 
-                        'Office 365', 'Impressora', 'Computador', 'Rede Cabeada', 'SDAI'],
+                labels: ['CFTV', 'Oracle Netsuite', 'Controle Acesso', 'Office 365', 'Automações', 
+                        'Rede WIFI', 'Impressora', 'Rede Cabeada', 'Computador', 'SDAI'],
                 datasets: [{
                     label: 'Quantidade de Atendimentos',
-                    data: [45, 32, 25, 16, 12, 10, 9, 7, 6, 5],
+                    data: [45, 34, 32, 12, 10, 10, 9, 8, 7, 5],
                     backgroundColor: [
                         chartColors.primary,
                         chartColors.secondary,
@@ -528,12 +533,12 @@
         new Chart(problemCtx, {
             type: 'bar',
             data: {
-                labels: ['Camera fora', 'Eletroímã Queimado', 'Instab. Conexão', 'Suporte Netsuite', 
-                        'Problema Camera', 'Acomp. Internet', 'Fonte Switch', 'Suporte Acesso', 
-                        'Instal. Impressora', 'Criar Relatório'],
+                labels: ['Camera fora', 'Problema Camera', 'Eletroímã Queimado', 'Suporte Netsuite', 
+                        'Instab. Conexão', 'Acomp. Internet', 'Fonte Switch', 'Instal. Impressora', 
+                        'Suporte Acesso', 'Criar Relatório'],
                 datasets: [{
                     label: 'Ocorrências',
-                    data: [25, 13, 9, 9, 9, 8, 6, 6, 6, 4],
+                    data: [25, 18, 13, 12, 9, 8, 7, 7, 6, 4],
                     backgroundColor: [
                         chartColors.danger,
                         chartColors.warning,
@@ -580,10 +585,10 @@
         new Chart(sectorCtx, {
             type: 'doughnut',
             data: {
-                labels: ['Segurança', 'Esfera', 'Financeiro', 'Facilities', 'Projetos', 
-                        'RH', 'Outros'],
+                labels: ['Segurança', 'Outros', 'Esfera', 'Financeiro', 'Facilities', 
+                        'Projetos', 'Eventos', 'RH', 'Compras'],
                 datasets: [{
-                    data: [42, 28, 24, 18, 14, 8, 41],
+                    data: [56, 36, 29, 28, 18, 8, 7, 6, 5],
                     backgroundColor: [
                         chartColors.primary,
                         chartColors.secondary,
@@ -591,7 +596,9 @@
                         chartColors.warning,
                         chartColors.info,
                         chartColors.purple,
-                        chartColors.orange
+                        chartColors.orange,
+                        chartColors.pink,
+                        chartColors.teal
                     ],
                     borderWidth: 2,
                     borderColor: '#fff'
@@ -620,10 +627,10 @@
             type: 'pie',
             data: {
                 labels: ['Sustentação CFTV', 'Sustentação Sistema de Acesso', 'Suporte Netsuite', 
-                        'Sustentação Automações', 'Sustentação Conectividade', 'Suporte a Usuario',
-                        'Acompanhamento', 'Outros'],
+                        'Suporte a Usuario', 'Sustentação Conectividade', 'Acompanhamento',
+                        'Sustentação Automações', 'Outros'],
                 datasets: [{
-                    data: [45, 32, 25, 16, 21, 19, 10, 7],
+                    data: [45, 32, 30, 23, 18, 12, 10, 23],
                     backgroundColor: [
                         chartColors.primary,
                         chartColors.secondary,
