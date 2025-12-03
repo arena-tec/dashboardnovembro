@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de Desempenho - Novembro/2025</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0E76E0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #5b00b8 0%, #0E76E0 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header-logo {
+            max-width: 200px;
+            height: auto;
+            margin-bottom: 20px;
+            filter: brightness(0) invert(1);
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .metric-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+
+        .metric-label {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .metric-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #0E76E0;
+            margin-bottom: 5px;
+        }
+
+        .metric-sublabel {
+            font-size: 0.85em;
+            color: #888;
+        }
+
+        .charts-section {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .chart-container {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .chart-title {
+            font-size: 1.3em;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .table-section {
+            margin-top: 40px;
+        }
+
+        .section-title {
+            font-size: 1.8em;
+            color: #333;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #0E76E0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        thead {
+            background: linear-gradient(135deg, #0E76E0 0%, #0E76E0 100%);
+            color: white;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+        }
+
+        th {
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85em;
+            letter-spacing: 1px;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #eee;
+            transition: background-color 0.3s ease;
+        }
+
+        tbody tr:hover {
+            background-color: #f8f9ff;
+        }
+
+        tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .status-resolved {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        @media (max-width: 1200px) {
+            .charts-section {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .header {
+                padding: 25px 15px;
+            }
+
+            .header-logo {
+                max-width: 150px;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .header p {
+                font-size: 1em;
+            }
+
+            .content {
+                padding: 20px 15px;
+            }
+
+            .metrics-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .metric-card {
+                padding: 20px;
+            }
+
+            .metric-value {
+                font-size: 2em;
+            }
+            
+            .charts-section {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .chart-container {
+                padding: 15px;
+            }
+
+            .chart-title {
+                font-size: 1.1em;
+                margin-bottom: 15px;
+            }
+
+            .section-title {
+                font-size: 1.4em;
+                margin-bottom: 15px;
+            }
+            
+            table {
+                font-size: 0.85em;
+                display: block;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            th, td {
+                padding: 10px 8px;
+                white-space: nowrap;
+            }
+
+            .status-badge {
+                font-size: 0.75em;
+                padding: 4px 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.5em;
+            }
+
+            .header p {
+                font-size: 0.9em;
+            }
+
+            .header-logo {
+                max-width: 120px;
+            }
+
+            .metric-card {
+                padding: 15px;
+            }
+
+            .metric-value {
+                font-size: 1.8em;
+            }
+
+            .metric-label {
+                font-size: 0.8em;
+            }
+
+            .metric-sublabel {
+                font-size: 0.75em;
+            }
+
+            .chart-title {
+                font-size: 1em;
+            }
+
+            table {
+                font-size: 0.75em;
+            }
+
+            th, td {
+                padding: 8px 6px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="header">
+            <img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB3aWR0aD0iOTcuNzExIiBoZWlnaHQ9IjQzLjA1IiB2aWV3Qm94PSIwIDAgOTcuNzExIDQzLjA1Ij4KICA8ZGVmcz4KICAgIDxjbGlwUGF0aCBpZD0iYSI+CiAgICAgIDxyZWN0IHdpZHRoPSI5Ny43MTEiIGhlaWdodD0iNDMuMDUiIGZpbGw9Im5vbmUiPjwvcmVjdD4KICAgIDwvY2xpcFBhdGg+CiAgPC9kZWZzPgogIDxnIGNsaXAtcGF0aD0idXJsKCNhKSI+CiAgICA8cGF0aCBkPSJNMTMuNDY5LDU2LjUyNGwtLjQxNywyLjY2MmEyOS4zMTcsMjkuMzE3LDAsMCwxLDE1LjIzLDguMzYybDYuMDgxLTMuOTkzcy43LS40NzMsMS4wMjgtLjA3N2MwLDAsLjMxOS4zMDgtLjI5Mi45NjdsLTQuOTk0LDUuMTc5YTI5LjE5MSwyOS4xOTEsMCwwLDEsNi4zMTgsMTUuNzI0aDIuODQ2bDQuNTA5LTI4LjgyNloiIHRyYW5zZm9ybT0idHJhbnNsYXRlKC05Ljc2OCAtNDIuMykiIGZpbGw9IiNmZmYiPjwvcGF0aD4KICAgIDxwYXRoIGQ9Ik0xNDkuMTA2LDY4LjMwOEgxNDUuNDhsMS4xODktNy40OTJoNC4xYzIuMzYyLDAsMi43Ny4yMTcsMy4xMzQuNzEyYTIuNjQzLDIuNjQzLDAsMCwxLC40NDUsMS42NjMsNC45LDQuOSwwLDAsMS01LjI0MSw1LjExN20yLjQ3MSwxMS44ODJjLTEuMDMuNzA4LTEuNzA3LjkxNC00LjIxNS45MTRoLTMuODhsMS4yOC04LjI4MWg0LjA5NWMzLjk1OSwwLDQuNDkzLDEuNzQ4LDQuNDkzLDMuNDU2YTQuNiw0LjYsMCwwLDEtMS43NzMsMy45MTFtMy4zODYtMTBhOC4yNzcsOC4yNzcsMCwwLDAsNC40ODItNy4zMzQsNi4xNzEsNi4xNzEsMCwwLDAtMS43LTQuNDgzYy0xLjI4Mi0xLjMyOC0yLjgzNy0xLjgyNS01LjczMS0xLjgyNWgtOS40ODdsLS4wOTIuNTg5LTMuNywyMy40NzZjLS4yNzIsMS43MTYtLjA0NSw0LjczNywzLjczLDQuNzUxdjBoNi41MTlhOSw5LDAsMCwwLDkuNDIzLTkuMzgxLDYuMTE2LDYuMTE2LDAsMCwwLTMuNDQxLTUuOCIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTEwMy43NjQgLTQyLjMyMSkiIGZpbGw9IiNmZmYiPjwvcGF0aD4KICAgIDxwYXRoIGQ9Ik0yMjguODY1LDY5LjM0OGwxLjM1Ni04LjUzMmgzLjg1YzMuNTUzLDAsNC4yLjk1NCw0LjIsMi44MzNhNS40MzYsNS40MzYsMCwwLDEtNS43ODMsNS43Wm02LjkzNywzLjYzNGE5LjQ1Miw5LjQ1MiwwLDAsMCw3LjMxOS05LjMzM2MwLTQuNTc3LTIuODU5LTcuMS04LjA1Mi03LjFoLTguOTkybC0uMDkyLjU5Mi0zLjgsMjQuMzg1Yy0uMTY5LDEuMjQ5LTEuMTEzLDMuODQzLDMuNDE5LDMuODQxbC40MzcsMGguMzE3bC4wOTQtLjU5MiwxLjczNi0xMS4xNjZoMi42MThsNS41NDIsMTEuMzY1LjE5Mi4zOTRoNS40NzZsLS41MDgtMS4wMTNaIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMTY2LjEzMiAtNDIuMzIxKSIgZmlsbD0iI2ZmZiI+PC9wYXRoPgogICAgPHBhdGggZD0iTTMxNi4xODksNjguMzA4aC0zLjYyN2wxLjE5MS03LjQ5Mmg0LjFjMi4zNjMsMCwyLjc3LjIxNywzLjEzNC43MTJhMi42NDksMi42NDksMCwwLDEsLjQ0NiwxLjY2Myw0LjksNC45LDAsMCwxLTUuMjQyLDUuMTE3bTIuNDcsMTEuODgyYy0xLjAyOC43MDgtMS43MDYuOTE0LTQuMjE0LjkxNGgtMy44NzlsMS4yNzktOC4yODFoNC4wOTRjMy45NjEsMCw0LjQ5NSwxLjc0OCw0LjQ5NSwzLjQ1NmE0LjYsNC42LDAsMCwxLTEuNzc0LDMuOTExbTMuMzg2LTEwYTguMjc2LDguMjc2LDAsMCwwLDQuNDgxLTcuMzM0LDYuMTY3LDYuMTY3LDAsMCwwLTEuNy00LjQ4M2MtMS4yODItMS4zMjktMi44MzgtMS44MjUtNS43MzEtMS44MjVoLTkuNDg5bC0uMDkyLjU5LTMuNjkyLDIzLjQyNGMtLjI0NCwxLjctLjA4OCw0Ljc4NywzLjcyNSw0Ljh2MGg2LjUxNmE5LDksMCwwLDAsOS40MjUtOS4zODEsNi4xMTQsNi4xMTQsMCwwLDAtMy40NDQtNS43OTUiIHRyYW5zZm9ybT0idHJhbnNsYXRlKC0yMjguODE2IC00Mi4zMjEpIiBmaWxsPSIjZmZmIj48L3BhdGg+CiAgICA8cGF0aCBkPSJNOS41MjQsOTQuNjE1bC0uMjc4LS4zMzYsNi41LTcuMzA2QTI2LjA0OSwyNi4wNDksMCwwLDAsMi43NzgsNzkuOTg1TC4xMjcsOTYuOTI4Yy0uNDYyLDMuMTc3LjExNSw1Ljk3OCw1LjQxMSw1Ljk3OEgyMy4zNjZhMjUuOTM5LDI1LjkzOSwwLDAsMC01LjMyNy0xMy4zNTlaIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgwIC01OS44NTkpIiBmaWxsPSIjZmZmIj48L3BhdGg+CiAgICA8cGF0aCBkPSJNMTYyLjY2MS4wODcsMTU3LjU0LDkuMDY2YS43MjguNzI4LDAsMCwwLC42MzMsMS4wOWguMmwxLjM1Ni0yLjM5MWg0LjEwOWwuMzUsMi4zOTFoMS40MUwxNjQuMTIyLjA4N1ptLjQ3OSwyLjYwNy41NzksMy45MzloLTMuMzkzbDIuMjM2LTMuOTI3Yy4xODEtLjMwOS4zMy0uNi40NzctLjkwOS4wMjYuMy4wNi42LjEuOSIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTExNy44MjYgLTAuMDY1KSIgZmlsbD0iI2ZmZiI+PC9wYXRoPgogICAgPHBhdGggZD0iTTM1OS43NTgsOS45NTgsMzU4LjMzMi4yMzRhLjE3My4xNzMsMCwwLDAtLjE3LS4xNDdoLTEuMjEzYS4xNzMuMTczLDAsMCwwLS4xNDkuMDg3bC01LjAyMSw4LjhhLjc4OC43ODgsMCwwLDAsLjY4NCwxLjE3OC4xNzMuMTczLDAsMCwwLC4xNS0uMDg3bDEuMzA2LTIuM2g0LjEwOWwuMzI4LDIuMjQ0YS4xNzMuMTczLDAsMCwwLC4xNy4xNDdoMS4wNjJhLjE3Mi4xNzIsMCwwLDAsLjE3LS4ybS0yLjQzLTcuMjY0LjU3OSwzLjkzOWgtMy4zOTNsMi4yMzYtMy45MjdjLjE4MS0uMzA5LjMzLS42LjQ3Ny0uOTA5LjAyNi4zLjA2LjYuMS45IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMjYzLjE4MyAtMC4wNjUpIiBmaWxsPSIjZmZmIj48L3BhdGg+CiAgICA8cGF0aCBkPSJNMjIwLjA3NSwyLjE4NWMwLS44MTYtLjQtMi4xODQtMy4wNzMtMi4xODQtLjk2NSwwLTEuODA5LjAxNS0yLjQ0LjA0NGwtLjA4NywwLTEuOTE2LDkuMDQzYS44NDUuODQ1LDAsMCwwLC44MjcsMS4wMjFoLjMxbC45NjItNC41MzVoLjE1MWwyLjc0MSw0LjUzNWgxLjYzOWwtMi4zNy0zLjc2MS0uMjMyLS4zNjljLS4xLS4xNjYtLjIxMS0uMzM3LS4zMTctLjUsMi4yNS0uMTM0LDMuOC0xLjQ3LDMuOC0zLjNtLTEuMzkzLjE0NmMwLDEuMy0xLjE1NiwyLjE3Ni0yLjg3NiwyLjE3Ni0uMzM3LDAtLjcxMy0uMDEtLjkyNi0uMDJsLjcxMy0zLjMzM2MuMjk0LS4wMjMuNzIxLS4wMzYsMS4yMTktLjAzNiwxLjI1OCwwLDEuODcuNCwxLjg3LDEuMjE0IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMTU5LjA1OSAtMC4wMDEpIiBmaWxsPSIjZmZmIj48L3BhdGg+CiAgICA8cGF0aCBkPSJNMjYwLjQ4LDEuMjE3aDQuMTdsLjIzNy0xLjEzaC01LjUyNGwtMS45MDgsOS4wMDhhLjg3OC44NzgsMCwwLDAsLjg1OSwxLjA2aDQuNDQxTDI2Mi45OTEsOWgtNC4xNjhsLjc1My0zLjQ2M2gzLjk4MWwuMjM3LTEuMTNoLTMuOThaIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMTkyLjY1OCAtMC4wNjUpIiBmaWxsPSIjZmZmIj48L3BhdGg+CiAgICA8cGF0aCBkPSJNMzA3Ljc2Mi4wODdsLS41ODgsMi43ODdjLS4zNCwxLjYwNi0uNzYsMy44MTMtMS4wMTIsNS4xOTUtLjEyOS0uNTIxLS4yODYtMS4wNjctLjQ2MS0xLjZMMzAzLjc2OC4wODdoLTEuNTc2bC0xLjg4Niw4LjlhLjk2NS45NjUsMCwwLDAsLjk0NCwxLjE2NWguMWwuNjc2LTMuMTA5Yy4yOTUtMS40MzYuNzIyLTMuNjI4Ljk1OC00Ljk0Mi4xMjMuNDgxLjI0Ny45MS40MTIsMS40MzhsMS45NzgsNi42MTNoMS41NjFMMzA5LjA3My4wODdaIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMjI0LjcyNSAtMC4wNjUpIiBmaWxsPSIjZmZmIj48L3BhdGg+CiAgPC9nPgo8L3N2Zz4K" alt="Arena BRB" class="header-logo">
+            <h1>📊 Dashboard de Desempenho</h1>
+            <p>Atendimentos Técnicos - Novembro/2025</p>
+        </div>
+
+        <div class="content">
+            <!-- Métricas Principais -->
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-label">Total de Atendimentos</div>
+                    <div class="metric-value">175</div>
+                    <div class="metric-sublabel">Solicitações registradas</div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-label">Taxa de Resolução</div>
+                    <div class="metric-value">100%</div>
+                    <div class="metric-sublabel">Todos os chamados resolvidos</div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-label">Sistemas Atendidos</div>
+                    <div class="metric-value">15</div>
+                    <div class="metric-sublabel">Diferentes sistemas/equipamentos</div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-label">Setores Atendidos</div>
+                    <div class="metric-value">12</div>
+                    <div class="metric-sublabel">Áreas solicitantes</div>
+                </div>
+            </div>
+
+            <!-- Gráficos Principais -->
+            <div class="charts-section">
+                <div class="chart-container">
+                    <div class="chart-title">🔧 Sistemas Mais Afetados</div>
+                    <canvas id="systemChart"></canvas>
+                </div>
+
+                <div class="chart-container">
+                    <div class="chart-title">⚠️ Problemas Mais Recorrentes</div>
+                    <canvas id="problemChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Gráficos Secundários -->
+            <div class="charts-section">
+                <div class="chart-container">
+                    <div class="chart-title">Distribuição por Setor Solicitante</div>
+                    <canvas id="sectorChart"></canvas>
+                </div>
+
+                <div class="chart-container">
+                    <div class="chart-title">Atendimentos por Tipo</div>
+                    <canvas id="typeChart"></canvas>
+                </div>
+
+                <div class="chart-container">
+                    <div class="chart-title">Volume de Atendimentos por Dia</div>
+                    <canvas id="dailyChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Tabela de Top Problemas -->
+            <div class="table-section">
+                <h2 class="section-title">🔧 Top 10 Problemas Mais Frequentes</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tipo de Problema</th>
+                            <th>Sistema</th>
+                            <th>Quantidade</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Camera fora/queda de energia</td>
+                            <td>CFTV</td>
+                            <td>25</td>
+                            <td><span class="status-badge status-resolved">Resolvido</span></td>
+                        </tr>
+                        <tr>
+                            <td>Fonte Eletroímã Queimada</td>
+                            <td>Controle de Acesso</td>
+                            <td>13</td>
+                            <td><span class="status-badge status-resolved">Resolvido</span></td>
+                        </tr>
+                        <tr>
+                            <td>Instabilidade conexão</td>
+                            <td>Rede WIFI</td>
+                            <td>9</td>
+                            <td><span class="status-badge status-resolved">Resolvido</span></td>
+                        </tr>
+                        <tr>
+                            <td>Suporte Oracle Netsuite</td>
+                            <td>Oracle Netsuite</td>
+                            <td>9</td>
+                            <td><span class="status-badge status-resolved">Resolvido</span></td>
+                        </tr>
+                        <tr>
+                            <td>Problema Camera</td>
+                            <td>CFTV</td>
+                            <td>9</td>
+                            <td><span class="status-badge status-resolved">Resolvido</span></td>
+                        </tr>
+                        <tr>
+                            <td>Acompanhamento de serviço de internet</td>
+                            <td>Rede/Fibra</td>
+                            <td>8</td>
+                            <td><span class="status-badge status-resolved">Resolvido</span></td>
+                        </tr>
+                        <tr>
+                            <td>Fonte Switch queimado</td>
+                            <td>Automações</td>
+                            <td>6</td>
+                            <td><span class="status-badge status-resolved">Resolvido</span></td>
+                        </tr>
+                        <tr>
+                            <td>Suporte sistema de acesso</td>
+                            <td>Controle de Acesso</td>
+                            <td>6</td>
+                            <td><span class="status-badge status-resolved">Resolvido</span></td>
+                        </tr>
+                        <tr>
+                            <td>Instalação Impressora</td>
+                            <td>Impressora</td>
+                            <td>6</td>
+                            <td><span class="status-badge status-resolved">Resolvido</span></td>
+                        </tr>
+                        <tr>
+                            <td>Criar Relatorio Netsuite</td>
+                            <td>Oracle Netsuite</td>
+                            <td>4</td>
+                            <td><span class="status-badge status-resolved">Resolvido</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuração global dos gráficos
+        Chart.defaults.font.family = "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif";
+        Chart.defaults.color = '#666';
+
+        const chartColors = {
+            primary: 'rgba(14, 118, 224, 0.8)',
+            secondary: 'rgba(10, 90, 180, 0.8)',
+            success: 'rgba(75, 192, 192, 0.8)',
+            warning: 'rgba(255, 206, 86, 0.8)',
+            danger: 'rgba(255, 99, 132, 0.8)',
+            info: 'rgba(54, 162, 235, 0.8)',
+            purple: 'rgba(153, 102, 255, 0.8)',
+            orange: 'rgba(255, 159, 64, 0.8)',
+            pink: 'rgba(255, 99, 255, 0.8)',
+            teal: 'rgba(64, 224, 208, 0.8)',
+            lime: 'rgba(191, 255, 0, 0.8)',
+            brown: 'rgba(165, 42, 42, 0.8)'
+        };
+
+        // Gráfico de Atendimentos por Sistema (Sistemas Mais Afetados)
+        const systemCtx = document.getElementById('systemChart').getContext('2d');
+        new Chart(systemCtx, {
+            type: 'bar',
+            data: {
+                labels: ['CFTV', 'Controle Acesso', 'Oracle Netsuite', 'Automações', 'Rede WIFI', 
+                        'Office 365', 'Impressora', 'Computador', 'Rede Cabeada', 'SDAI'],
+                datasets: [{
+                    label: 'Quantidade de Atendimentos',
+                    data: [45, 32, 25, 16, 12, 10, 9, 7, 6, 5],
+                    backgroundColor: [
+                        chartColors.primary,
+                        chartColors.secondary,
+                        chartColors.success,
+                        chartColors.warning,
+                        chartColors.danger,
+                        chartColors.info,
+                        chartColors.purple,
+                        chartColors.orange,
+                        chartColors.pink,
+                        chartColors.teal
+                    ],
+                    borderWidth: 0,
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(0,0,0,0.05)'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+
+        // Gráfico de Problemas Mais Recorrentes
+        const problemCtx = document.getElementById('problemChart').getContext('2d');
+        new Chart(problemCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Camera fora', 'Eletroímã Queimado', 'Instab. Conexão', 'Suporte Netsuite', 
+                        'Problema Camera', 'Acomp. Internet', 'Fonte Switch', 'Suporte Acesso', 
+                        'Instal. Impressora', 'Criar Relatório'],
+                datasets: [{
+                    label: 'Ocorrências',
+                    data: [25, 13, 9, 9, 9, 8, 6, 6, 6, 4],
+                    backgroundColor: [
+                        chartColors.danger,
+                        chartColors.warning,
+                        chartColors.orange,
+                        chartColors.info,
+                        chartColors.purple,
+                        chartColors.success,
+                        chartColors.pink,
+                        chartColors.teal,
+                        chartColors.lime,
+                        chartColors.brown
+                    ],
+                    borderWidth: 0,
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                indexAxis: 'y',
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(0,0,0,0.05)'
+                        }
+                    },
+                    y: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+
+        // Gráfico de Setores
+        const sectorCtx = document.getElementById('sectorChart').getContext('2d');
+        new Chart(sectorCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Segurança', 'Esfera', 'Financeiro', 'Facilities', 'Projetos', 
+                        'RH', 'Outros'],
+                datasets: [{
+                    data: [42, 28, 24, 18, 14, 8, 41],
+                    backgroundColor: [
+                        chartColors.primary,
+                        chartColors.secondary,
+                        chartColors.success,
+                        chartColors.warning,
+                        chartColors.info,
+                        chartColors.purple,
+                        chartColors.orange
+                    ],
+                    borderWidth: 2,
+                    borderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 15,
+                            font: {
+                                size: 11
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Gráfico de Tipos de Atendimento
+        const typeCtx = document.getElementById('typeChart').getContext('2d');
+        new Chart(typeCtx, {
+            type: 'pie',
+            data: {
+                labels: ['Sustentação CFTV', 'Sustentação Sistema de Acesso', 'Suporte Netsuite', 
+                        'Sustentação Automações', 'Sustentação Conectividade', 'Suporte a Usuario',
+                        'Acompanhamento', 'Outros'],
+                datasets: [{
+                    data: [45, 32, 25, 16, 21, 19, 10, 7],
+                    backgroundColor: [
+                        chartColors.primary,
+                        chartColors.secondary,
+                        chartColors.success,
+                        chartColors.warning,
+                        chartColors.danger,
+                        chartColors.info,
+                        chartColors.purple,
+                        chartColors.orange
+                    ],
+                    borderWidth: 2,
+                    borderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 12,
+                            font: {
+                                size: 10
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Gráfico de Volume Diário (primeiros 15 dias como exemplo)
+        const dailyCtx = document.getElementById('dailyChart').getContext('2d');
+        new Chart(dailyCtx, {
+            type: 'line',
+            data: {
+                labels: ['03', '04', '05', '06', '07', '10', '11', '12', '13', '14', '17', '18', '19', '21', '24'],
+                datasets: [{
+                    label: 'Atendimentos',
+                    data: [3, 10, 3, 4, 6, 7, 5, 11, 8, 7, 7, 5, 8, 5, 9],
+                    borderColor: chartColors.primary,
+                    backgroundColor: 'rgba(14, 118, 224, 0.1)',
+                    tension: 0.4,
+                    fill: true,
+                    pointRadius: 4,
+                    pointHoverRadius: 6,
+                    pointBackgroundColor: chartColors.primary,
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(0,0,0,0.05)'
+                        },
+                        ticks: {
+                            stepSize: 2
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        title: {
+                            display: true,
+                            text: 'Dia do Mês'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
